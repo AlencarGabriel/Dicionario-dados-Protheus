@@ -1,0 +1,135 @@
+#Include "Protheus.ch"
+ 
+Namespace Dicionario
+
+Class TAdapterBase
+	Private Data aFields As Array
+	Private Data cAlias As String
+	Private Data cDictionary As String
+
+	Private Data cHeader As String
+	Private Data cHeaderAlign As String
+	Private Data cBody As String
+
+	Public Method New() Constructor
+	Public Method SetDictionary()
+	Public Method SetFields()
+	Private Method GetHeader()
+	Private Method GetBody()
+	Public Method ToMarkdown()
+
+EndClass
+
+Method New(cAlias) Class TAdapterBase
+	::cHeader := ""
+	::cHeaderAlign := ""
+	::cBody := ""
+	::cAlias := cAlias
+	::cDictionary := ""
+	::aFields := {}
+Return Self
+
+Method SetDictionary(cDictionary) Class TAdapterBase
+	::cDictionary := cDictionary
+Return Self
+
+Method SetFields(aFields) Class TAdapterBase
+	::aFields := aFields
+Return Self
+
+Method GetHeader() Class TAdapterBase
+	Local nI As Numeric
+
+	For nI := 2 to Len(::aFields)
+		
+		If ValType(Self:aFields[nI]) == "A"
+			::cHeader += ::aFields[nI][1] + "|"
+			
+			If AllTrim(Upper(::aFields[nI][2])) == "CENTER"
+				::cHeaderAlign += ":-:|"
+			ElseIf AllTrim(Upper(::aFields[nI][2])) == "RIGHT"
+				::cHeaderAlign += "-:|"
+			Else
+				::cHeaderAlign += "-|"
+			EndIf
+			
+		Else
+			::cHeader += ::aFields[nI] + "|"
+			::cHeaderAlign += "-|"
+		EndIf
+		
+	Next
+
+Return Self
+
+Method GetBody() Class TAdapterBase
+	Local nI As Numeric
+	Local cFilter As Char
+	Local cAliasSXs As Char
+
+	cAliasSXs := GetNextAlias()
+
+	If !Empty(::cAlias)
+
+		If ValType("::aFields[nI]") == "A"
+			cFilter := "(cAliasSXs)->" + ::aFields[1][1] + " == " + ValToSQL(::cAlias)
+		Else
+			cFilter := "(cAliasSXs)->" + ::aFields[1] + " == " + ValToSQL(::cAlias)
+		EndIf
+
+	EndIf
+
+	OpenSXs(,,,,, cAliasSXs, ::cDictionary,,.F.)
+	(cAliasSXs)->(DbSetFilter({|| &(cFilter)}, cFilter))
+	(cAliasSXs)->(DBGoTop())
+
+	While !(cAliasSXs)->(Eof())
+
+		For nI := 2 to Len(::aFields)
+			
+			If ValType(Self:aFields[nI]) == "A"
+				
+				// Is Code
+				If ::aFields[nI][3] .AND. !Empty(cValToChar((cAliasSXs)->&(::aFields[nI][1])))
+					::cBody += "`" + AllTrim(cValToChar((cAliasSXs)->&(::aFields[nI][1]))) + "` |"
+				Else
+					::cBody += AllTrim(cValToChar((cAliasSXs)->&(::aFields[nI][1]))) + "|"
+				EndIf
+				
+			Else
+				::cBody += AllTrim(cValToChar((cAliasSXs)->&(::aFields[nI]))) + "|"
+			EndIf
+
+		Next
+
+		::cBody += CRLF
+
+		(cAliasSXs)->(DBSkip())
+
+	EndDo
+
+	If Select(cAliasSXs) > 0
+		(cAliasSXs)->(DBCloseArea())
+	EndIf
+	
+Return Self
+
+Method ToMarkdown() Class TAdapterBase
+	Local cRet As Char
+
+	cRet := ""
+	::GetHeader()
+	::GetBody()
+
+	cRet += CRLF
+	cRet += ::cHeader
+	cRet += CRLF
+	cRet += ::cHeaderAlign
+	cRet += CRLF
+	cRet += ::cBody
+	
+	::cHeader := ""
+	::cHeaderAlign := ""
+	::cBody := ""
+	
+Return cRet
