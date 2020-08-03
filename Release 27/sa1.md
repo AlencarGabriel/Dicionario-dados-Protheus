@@ -1,5 +1,6 @@
 # SA1 - Clientes
 ## SX3 - Campos da tabela
+
 X3_ORDEM|X3_CAMPO|X3_TIPO|X3_TAMANHO|X3_DECIMAL|X3_TITULO|X3_DESCRIC|X3_PICTURE|X3_VALID|X3_RELACAO|X3_F3|X3_BROWSE|X3_VISUAL|X3_CONTEXT|X3_CBOX|X3_WHEN|
 -|-|-|-:|-:|-|-|:-:|:-:|-|-|-|-|-|-|:-:|
 01|A1_FILIAL|C|2|0|Filial|Filial do Sistema|||||N||R|||
@@ -264,6 +265,7 @@ P9|A1_TPDP|C|1|0|Calc. TPDP|Calcula TPDP|`@!` |`Pertence(" 12")` |"2"||N|A|R|1=S
 
 
 ## SIX - Índices da tabela
+
 ORDEM|CHAVE|DESCRICAO|F3|NICKNAME|SHOWPESQ|
 -|-|-|-|-|-|
 1|A1_FILIAL+A1_COD+A1_LOJA|Codigo + Loja|||S|
