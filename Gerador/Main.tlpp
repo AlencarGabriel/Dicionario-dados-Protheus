@@ -3,7 +3,7 @@
 User Function fGeraDic()
     Local aStructSX3 := {"X3_ARQUIVO","X3_ORDEM","X3_CAMPO","X3_TIPO",{"X3_TAMANHO","RIGHT",.F.},{"X3_DECIMAL","RIGHT",.F.},"X3_TITULO","X3_DESCRIC",{"X3_PICTURE","CENTER",.T.},{"X3_VALID","CENTER",.T.},"X3_RELACAO","X3_F3","X3_BROWSE","X3_VISUAL","X3_CONTEXT","X3_CBOX",{"X3_WHEN","CENTER",.T.}}
     Local aStructSIX := {"INDICE","ORDEM","CHAVE","DESCRICAO","F3","NICKNAME","SHOWPESQ"}
-    Local cAlias := "SF5"
+    Local cAlias := "SA3"
     Local cDirDestino := "C:\Users\Gabriel Alencar\Documents\GitHub\Dicionario-dados-Protheus\Release 27\"
     Local cFile := cDirDestino + cAlias + ".md"
     Local oDicionario := Nil
